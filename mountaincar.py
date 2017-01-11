@@ -42,9 +42,9 @@ class MountainCar():
         self.reset()  # Reset car variables
 
     def reset(self):
-        """ Reset the mountain car to a random initial position. """
+        """ Reset the mountain car to a random initial state. """
         self.x = 80 * np.random.rand() - 130.0  # Set pos. to range [-130; -50]
-        self.x_d = 10.0 * np.random.rand() - 5.0  # Set x_dot to range [-5; 5]
+        self.x_d = 10.0 * np.random.rand() - 5.0  # Set x vel. to range [-5; 5]
         self.R = 0.0  # Reset reward
         self.t = 0.0  # Reset time
         self.F = 0.0  # Reset applied force
@@ -90,7 +90,7 @@ class MountainCar():
 
         Note
         ----
-        v and x dot are not the same; v includes the y direction.
+        v and x_dot are not the same; v includes the y direction.
 
         """
         a = self.g * self._h(x)
