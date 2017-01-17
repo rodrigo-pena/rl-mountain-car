@@ -323,6 +323,28 @@ def plot_learning_curves(lc, ax=None):
     return ax
 
 
+def plot_weights(agent, f=None):
+    nx_d = agent.net.nx_d
+    nx = agent.net.nx
+    W_backward = agent.net.W[0, :].reshape(nx_d, nx)
+    W_neutral = agent.net.W[1, :].reshape(nx_d, nx)
+    W_forward = agent.net.W[2, :].reshape(nx_d, nx)
+    fig = plt.figure(figsize=(12, 6)) if f is None else f
+    plt.subplot(1, 3, 1)
+    plt.imshow(W_backward)
+    plt.title('W for backward action')
+    plt.colorbar()
+    plt.subplot(1, 3, 2)
+    plt.imshow(W_neutral)
+    plt.title('W for neutral action')
+    plt.colorbar()
+    plt.subplot(1, 3, 3)
+    plt.imshow(W_forward)
+    plt.title('W for forward action')
+    plt.colorbar()
+    return fig
+
+
 def exp_temp_decay(t_0, t_end, curr_step, n_steps):
     r"""
     Exponentially decrease the exploration temperature.
