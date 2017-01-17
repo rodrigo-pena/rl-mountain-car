@@ -1,5 +1,5 @@
 """
-Mountain-car module for the reinforcement learning miniproject.
+Mountain-car module implementing dynamics and visualization.
 """
 
 import pylab as plb

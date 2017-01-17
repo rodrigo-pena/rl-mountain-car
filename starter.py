@@ -1,3 +1,7 @@
+"""
+Learning module for the mountain-car problem.
+"""
+
 import sys
 
 import pylab as plb
@@ -186,6 +190,7 @@ class Agent():
                 p = np.ones(Q.shape)
             else:
                 p = np.exp(np.clip(Q / self.temp, -500, 500))
+
             p = p / np.sum(p)
             cmf = np.cumsum(p)  # cumulative mass function
 
@@ -388,7 +393,7 @@ def job(n_agents, n_trials, n_steps, temp, temp_fun, el_tr_rate, W):
     return agent.learn(n_trials=n_trials, n_steps=n_steps)
 
 
-def batch_agents(n_agents=16, n_trials=100, n_steps=1000, temp=None,
+def batch_agents(n_agents=16, n_trials=100, n_steps=10000, temp=None,
                  temp_fun=None, el_tr_rate=None, W=None):
     """
     Train in parallel a number of agents and record their learning curves.
