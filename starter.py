@@ -32,7 +32,7 @@ class Network():
 
     """
 
-    def __init__(self, grid_shape=[20, 20], W=None):
+    def __init__(self, grid_shape=(20, 20), W=None):
         self.nx, self.nx_d = grid_shape
         if W is None:
             # self.W = np.random.uniform(size=(3, self.nx * self.nx_d))
@@ -258,7 +258,7 @@ def plot_q_values(agent, f=None):
     ax.zaxis.set_major_locator(LinearLocator(10))
     ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
 
-    return fig
+    return fig, ax
 
 
 def plot_vector_field(agent):
@@ -300,7 +300,7 @@ def plot_vector_field(agent):
     ax.set(aspect=1, title='Directions with highest Q-value')
     ax.set_xlabel('x [m]')
     ax.set_ylabel('dx/dt [m/s]')
-    plt.show()
+    return fig, ax
 
 
 def plot_learning_curves(lc, fig=None):
@@ -328,23 +328,25 @@ def plot_weights(agent, f=None):
     """ Plot NN weights corresponding to each action """
     nx_d = agent.net.nx_d
     nx = agent.net.nx
+
     W_backward = agent.net.W[0, :].reshape(nx_d, nx)
     W_neutral = agent.net.W[1, :].reshape(nx_d, nx)
     W_forward = agent.net.W[2, :].reshape(nx_d, nx)
-    fig = plt.figure(figsize=(12, 6)) if f is None else f
-    plt.subplot(1, 3, 1)
-    plt.imshow(W_backward)
-    plt.title('W for backward action')
-    plt.colorbar()
-    plt.subplot(1, 3, 2)
-    plt.imshow(W_neutral)
-    plt.title('W for neutral action')
-    plt.colorbar()
-    plt.subplot(1, 3, 3)
-    plt.imshow(W_forward)
-    plt.title('W for forward action')
-    plt.colorbar()
-    return fig
+
+    from mpl_toolkits.axes_grid1 import make_axes_locatable
+    fig = plt.figure(figsize=(18, 6)) if f is None else f
+
+    i = 0
+    for choice in ['backward', 'neutral', 'forward']:
+        i += 1
+        ax = fig.add_subplot(1, 3, i)
+        im = ax.imshow(eval('W_' + choice))
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        fig.colorbar(im, cax=cax)
+        ax.set(aspect=1, title=('W for ' + choice + ' action'))
+
+    return fig, ax
 
 
 def exp_temp_decay(t_0, t_end, curr_step, n_steps):

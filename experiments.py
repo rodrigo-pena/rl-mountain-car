@@ -1,5 +1,19 @@
 """
 Experiment module for reproducing the figures in the report.
+
+Notes
+-----
+Whenever a parameter is set via terminal, the remaining parameters stay on
+their default value.
+
+Usage (terminal):
+    Set eligibility trace rate to zero:
+    $ python experiments.py el_tr_rate 0
+
+    Set intitial exploration temperature to 1000 and decrease it exponentially
+    with time:
+    $ python experiments.py temp 1000 --temp_fun
+
 """
 
 import starter as st
