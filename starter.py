@@ -303,15 +303,16 @@ def plot_vector_field(agent):
     plt.show()
 
 
-def plot_learning_curves(lc, ax=None):
+def plot_learning_curves(lc, fig=None):
     """ Plot average and standard deviation of the input curves. """
     lc_mean = np.mean(lc, axis=0)
     lc_std = np.std(lc, axis=0)
     trials = np.array(range(len(lc_mean))) + 1
 
-    if ax is None:
-        plt.figure()
-        ax = plt.axes()
+    if fig is None:
+        fig, ax = plt.subplots(1, 1)
+    else:
+        ax = fig.axes()
     ax.set_title("Learning curve")
     ax.set_xlabel("Trial number")
     ax.set_ylabel("Excape latency")
@@ -320,10 +321,11 @@ def plot_learning_curves(lc, ax=None):
                     color="g")
     ax.plot(trials, lc_mean, 'o-', color="g")
 
-    return ax
+    return fig, ax
 
 
 def plot_weights(agent, f=None):
+    """ Plot NN weights corresponding to each action """
     nx_d = agent.net.nx_d
     nx = agent.net.nx
     W_backward = agent.net.W[0, :].reshape(nx_d, nx)
