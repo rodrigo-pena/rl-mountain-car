@@ -107,10 +107,11 @@ class Agent():
         self.temp_fun = temp_fun
 
     def learn(self, n_trials=100, n_steps=10000, verbose=0):
+        self.verbose = verbose
         learning_curve = n_steps * np.ones(n_trials)
 
         for i in range(n_trials):
-            if verbose:
+            if self.verbose:
                 # Prepare for visualization
                 plb.ion()
                 mv = mountaincar.MountainCarViewer(self.mc)
@@ -147,12 +148,12 @@ class Agent():
                 self.net.W += deltaW
 
                 # Log
-                if verbose:
+                if self.verbose:
                     mv.update_figure()
                     plb.draw()
                     print("tau = {}".format(self.temp))
-                    print("a_prime = {}".format(a_prime))
-                    print("q_prime = {}".format(q_prime))
+                    print("a' = {}".format(a_prime))
+                    print("q' = {}".format(q_prime))
                     print("delta = {}".format(delta))
                     print("||deltaW|| = {}".format(np.linalg.norm(deltaW)))
                     print("max(|deltaW|) = {}".format(np.max(np.abs(deltaW))))
@@ -165,7 +166,7 @@ class Agent():
 
                 # Check for rewards
                 if self.mc.R > 0.0:
-                    if verbose:
+                    if self.verbose:
                         print("\rGot reward at t = {}".format(self.mc.t))
                         sys.stdout.flush()
                     learning_curve[i] = j
@@ -196,6 +197,8 @@ class Agent():
             u = np.random.uniform()  # random number for action choice
             action = np.argmax(u <= cmf)
 
+        if self.verbose:
+            print("p = [{0[0]:.2f}, {0[1]:.2f}, {0[2]:.2f}]".format(p))
         force = action - 1
         self.mc.apply_force(force)
 
