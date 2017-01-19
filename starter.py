@@ -35,9 +35,9 @@ class Network():
     def __init__(self, grid_shape=(20, 20), W=None):
         self.nx, self.nx_d = grid_shape
         if W is None:
-            # self.W = np.random.uniform(size=(3, self.nx * self.nx_d))
+            self.W = np.random.uniform(size=(3, self.nx * self.nx_d))
             # self.W = np.zeros((3, self.nx * self.nx_d))
-            self.W = np.ones((3, self.nx * self.nx_d))
+            # self.W = np.ones((3, self.nx * self.nx_d))
         else:
             r, c = W.shape
             assert r == 3 and c == (self.nx * self.nx_d), \
@@ -96,19 +96,17 @@ class Agent():
 
     """
 
-    def __init__(self, mc=None, net=None, temp=None, learn_rate=1e-1,
+    def __init__(self, mc=None, net=None, temp=None, learn_rate=1e-2,
                  reward_factor=0.95, el_tr_rate=None, temp_fun=None):
         self.mc = mountaincar.MountainCar() if mc is None else mc
         self.net = Network() if net is None else net
-        self.temp0 = 1 if temp is None else temp
+        self.temp0 = 0.1 if temp is None else temp
         self.learn_rate = learn_rate
         self.reward_factor = reward_factor
         self.el_tr_rate = 0.95 if el_tr_rate is None else el_tr_rate
         self.temp_fun = temp_fun
 
-    def learn(self, n_trials=None, n_steps=None, verbose=0):
-        n_trials = 100 if n_trials is None else n_trials
-        n_steps = 10000 if n_steps is None else n_steps
+    def learn(self, n_trials=100, n_steps=10000, verbose=0):
         learning_curve = n_steps * np.ones(n_trials)
 
         for i in range(n_trials):
@@ -125,11 +123,11 @@ class Agent():
             el_tr = np.zeros(self.net.W.shape)  # eligibility traces
             a, q, r = self.choose_action()
 
-            for j in range(n_steps):
+            # Update exploration temperature
+            if self.temp_fun is not None:
+                self.temp = self.temp_fun(self.temp0, 0, i, n_trials)
 
-                # Update exploration temperature
-                if self.temp_fun is not None:
-                    self.temp = self.temp_fun(self.temp0, 0, j, n_steps)
+            for j in range(n_steps):
 
                 # Update eligibility traces
                 el_tr *= (self.reward_factor * self.el_tr_rate)

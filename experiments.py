@@ -1,18 +1,22 @@
 """
 Experiment module for reproducing the figures in the report.
 
+Usage (terminal):
+    Set eligibility trace rate to zero:
+    $ python experiments.py el_tr_rate 0
+
+    Set intitial exploration temperature to 1000 and decrease it linearly
+    with time:
+    $ python experiments.py temp 1 --temp_fun
+
 Notes
 -----
 Whenever a parameter is set via terminal, the remaining parameters stay on
 their default value.
 
-Usage (terminal):
-    Set eligibility trace rate to zero:
-    $ python experiments.py el_tr_rate 0
-
-    Set intitial exploration temperature to 1000 and decrease it exponentially
-    with time:
-    $ python experiments.py temp 1000 --temp_fun
+To set temp to infinity, just call the tep experiment with a value greater than
+1e6, e.g.,
+    $ python experiments.py temp 10000000
 
 """
 
@@ -35,13 +39,14 @@ if __name__ == "__main__":
 
     # Deal with optional argument
     if args.temp_fun:
-        temp_fun = st.exp_temp_decay
+        temp_fun = st.lin_temp_decay
         figname += 'with_temp_decay'
     else:
         temp_fun = None
 
     if args.exp_type == 'temp':  # Experiment on exploration temperature
-        learning_curves = st.batch_agents(temp=args.val)
+        val = np.inf if args.val > 1e6 else args.val
+        learning_curves = st.batch_agents(temp=val)
 
     if args.exp_type == 'el_tr_rate':  # Experiment on eligibility trace decay
         learning_curves = st.batch_agents(el_tr_rate=args.val)
