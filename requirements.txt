@@ -1,0 +1,7 @@
+numpy
+matplotlib
+sys
+argparse
+
+jupyter
+ipython
